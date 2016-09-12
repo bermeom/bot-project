@@ -64,7 +64,7 @@
 		<dependency>
 			<groupId>org.jpavlich</groupId>
 			<artifactId>ast-visualizer</artifactId>
-			<version>[0.0.1,)</version>
+			<VERSION>[0.0.1,)</VERSION>
 		</dependency>
 		<dependency>
 			<groupId>org.jpavlich</groupId>
