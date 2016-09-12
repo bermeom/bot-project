@@ -5,13 +5,9 @@ grammar Bot;
 import org.jpavlich.bot.*;
 
 }
-/* 
-@parser::header{
-	//import java.util.Map;
-	//import java.util.HashMap;
-	
-}
-*/
+
+
+
 @parser::members {
 
 private Bot bot;
@@ -35,15 +31,14 @@ input:VAR ID;
 sentence: var_decl | var_assign | println | command | read | while_ | if_ | function_call | print;
 command: north | east | pick | west | south | drop | look;
 
-east returns [Object value]:EAST NUMBER{$value=Integer.parseInt($NUMBER);} SEMICOLON
-	{bot.left($value)};
-north returns [Object value]:NORTH NUMBER{$value=Integer.parseInt($NUMBER);} SEMICOLON
-	{bot.up($value)};
-west returns [Object value]:WEST NUMBER{$value=Integer.parseInt($NUMBER);} SEMICOLON
-	{bot.right($value)};
-south returns [Object value]:SOUTH NUMBER{$value=Integer.parseInt($NUMBER);} SEMICOLON
-	{bot.down($value)};
-	
+east returns [Object value]:EAST NUMBER{$value=Integer.parseInt($NUMBER.text);} SEMICOLON
+	{bot.left((int)$value);};
+north returns [Object value]:NORTH NUMBER{$value=Integer.parseInt($NUMBER.text);} SEMICOLON
+	{bot.up((int)$value);};
+west returns [Object value]:WEST NUMBER{$value=Integer.parseInt($NUMBER.text);} SEMICOLON
+	{bot.right((int)$value);};
+south returns [Object value]:SOUTH NUMBER{$value=Integer.parseInt($NUMBER.text);} SEMICOLON
+	{bot.down((int)$value);};
 pick:PICK SEMICOLON;
 look:LOOK SEMICOLON;
 drop:DROP SEMICOLON;

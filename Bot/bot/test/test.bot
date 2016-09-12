@@ -1,2 +1,5 @@
-hello world
-hello world
+south 4;
+north 2;
+west 4;
+east 3;
+south 1;
