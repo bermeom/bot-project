@@ -1,5 +1,8 @@
-south 4;
+var h=4;
+println h;
+south h;
 north 2;
 west 4;
-east 3;
+east h;
 south 1;
+println "hoola mis muchachos";
