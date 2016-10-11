@@ -1,3 +1,11 @@
+fun nn(var a)
+{	
+	
+	println "diagonal terminada";
+	println a;
+	
+};
+
 var h=4;
 println h;
 south h;
@@ -5,4 +13,5 @@ north 2;
 west 4;
 east h;
 south 1;
-println "hoola mis muchachos";
+println "antes";
+nn(1);

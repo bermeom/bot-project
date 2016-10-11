@@ -1,5 +1,6 @@
 package co.edu.javeriana.bot.ast;
 
+import java.util.List;
 import java.util.Map;
 
 public class AdditionString extends Addition {
@@ -9,8 +10,8 @@ public class AdditionString extends Addition {
 	}
 	
 	@Override
-	public Object execute(Map<String, Object> symbolTable, ProgramInfo programInfo) {
-		return this.operand1.execute(symbolTable, programInfo).toString()+this.operand2.execute(symbolTable, programInfo).toString()+" ";
+	public Object execute(List<Map<String,Object>>  symbolTables, ProgramInfo programInfo) {
+		return this.operand1.execute(symbolTables, programInfo).toString()+this.operand2.execute(symbolTables, programInfo).toString()+" ";
 	}
 
 }

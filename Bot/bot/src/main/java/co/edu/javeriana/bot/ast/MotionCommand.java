@@ -1,5 +1,6 @@
 package co.edu.javeriana.bot.ast;
 
+import java.util.List;
 import java.util.Map;
 
 public class MotionCommand implements ASTNode {
@@ -14,20 +15,20 @@ public class MotionCommand implements ASTNode {
 	}
 
 	@Override
-	public Object execute(Map<String, Object> symbolTable, ProgramInfo programInfo) {
+	public Object execute(List<Map<String,Object>>  symbolTables, ProgramInfo programInfo) {
 		
 		switch (commandName) {
 		case "north":
-			programInfo.getBot().up((int)this.expression.execute(symbolTable, programInfo));
+			programInfo.getBot().up((int)this.expression.execute(symbolTables, programInfo));
 			break;
 		case "east":
-			programInfo.getBot().left((int)this.expression.execute(symbolTable, programInfo));
+			programInfo.getBot().left((int)this.expression.execute(symbolTables, programInfo));
 			break;
 		case "west":
-			programInfo.getBot().right((int)this.expression.execute(symbolTable, programInfo));
+			programInfo.getBot().right((int)this.expression.execute(symbolTables, programInfo));
 			break;
 		case "south":
-			programInfo.getBot().down((int)this.expression.execute(symbolTable, programInfo));
+			programInfo.getBot().down((int)this.expression.execute(symbolTables, programInfo));
 			break;
 		}
 		return null;

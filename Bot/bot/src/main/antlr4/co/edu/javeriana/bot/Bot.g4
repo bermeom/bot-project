@@ -30,19 +30,29 @@ program: {
 		(s1=sentence{sentences.add($s1.node);})*
 		{
 			for(ASTNode n:sentences){
-				n.execute(programInfo.getSymbolTable(),programInfo);
+				n.execute(programInfo.getSymbolTables(),programInfo);
 			}
 		};
 
 function returns [ASTNode node]: {
 			
 		}
-		FUNCTION ID input_function definition
+		FUNCTION ID input_function definition SEMICOLON
 		{
-			$node = new Function($ID.text,$definition.body);
+			$node = new Function($ID.text,$input_function.parameters,$definition.body);
 		}
 		;
 		
+function_call returns [ASTNode node]:
+			{
+				List<ASTNode> expressions=new ArrayList<ASTNode>();
+			}
+			ID PAR_OPEN (e1=expression{expressions.add($e1.node);} (COMMA e2=expression{expressions.add($e2.node);})*)* PAR_CLOSE SEMICOLON
+			{
+				$node = new FunctionCall($ID.text,expressions);
+			}
+			;
+
 definition returns [List<ASTNode> body]:
 			{
 				$body=new ArrayList<ASTNode>();
@@ -50,8 +60,13 @@ definition returns [List<ASTNode> body]:
 			BRACKET_OPEN 
 			(s1=sentence{$body.add($s1.node);})*
 			BRACKET_CLOSE;
-input_function:PAR_OPEN input (COMMA input)* PAR_CLOSE;
-input:VAR ID;
+input_function returns [List<String> parameters]: 
+				{
+					$parameters=new ArrayList<String>();
+				}
+				PAR_OPEN 
+				in1=input{$parameters.add($in1.var_name);} (COMMA in2=input{$parameters.add($in2.var_name);})* PAR_CLOSE;
+input returns [String var_name]: VAR ID{$var_name=$ID.text;};
 sentence returns [ASTNode node] : function {$node=$function.node;}
 								| var_decl {$node=$var_decl.node;}
 								| var_assign {$node=$var_assign.node;}
@@ -61,7 +76,7 @@ sentence returns [ASTNode node] : function {$node=$function.node;}
 								| motionCommand {$node=$motionCommand.node;}
 								| while_loop {$node=$while_loop.node;}
 								| conditional {$node=$conditional.node;}
-								//| function_call {$node=$function_call.node;}
+								| function_call {$node=$function_call.node;}
 								//| read {$node=$read.node;}
 								;
 								
@@ -105,22 +120,24 @@ term returns [ASTNode node]:
 				| string {$node=($string.node);}
 			;
 string returns [ASTNode node]: 
-				{$node=new Constant("");}
-				QUOTATION_MARKS (id=ID{$node=new AdditionString($node,new Constant($id.text));})* QUOTATION_MARKS;
+				STRING{$node=new Constant(((String)$STRING.text).replace("\"",""));}
+				;
 
-while_loop  returns [ASTNode node]: WHILE PAR_OPEN expression PAR_CLOSE definition  
+while_loop  returns [ASTNode node]: WHILE PAR_OPEN expression PAR_CLOSE definition SEMICOLON
 			{
 				$node = new WhileLoop($expression.node,$definition.body);
 			}
 			;
 
-conditional returns [ASTNode node]: IF PAR_OPEN expression PAR_CLOSE 
+conditional returns [ASTNode node]:IF PAR_OPEN expression PAR_CLOSE 
 				(body=definition)  	 
-				ELSE 
-				(elsebody=definition) 
+				(ELSE 
+				(elsebody=definition))? 
+				SEMICOLON
 				 {
 				 	$node=new Conditional($expression.node,$body.body,$elsebody.body);
 				 }
+				 
 				  ;
 
 println returns [ASTNode node]: PRINTLN expression SEMICOLON
@@ -131,19 +148,26 @@ print returns [ASTNode node]:PRINT expression SEMICOLON
 			{
 				$node=new Print($expression.node);
 			};
+			
+read:READ ID SEMICOLON;
+			
+
 
 var_decl returns [ASTNode node]: VAR (
 								ID{$node=new VarDecl($ID.text);} SEMICOLON 
 								| var_assign{$node=$var_assign.node;}
 								);
+								
+								
+								
 var_assign returns [ASTNode node]: ID ASSIGN expression SEMICOLON 
 		{$node=new VarAssign($ID.text,$expression.node);} ;
 
-read:READ ID SEMICOLON;
-function_call:ID PAR_OPEN input_function_ PAR_CLOSE SEMICOLON;
-input_function_:expression (COMMA term)*;
+
 
 //------------------
+
+STRING:'\"'([a-zA-Z_0-9]|' ')*'\"';
 FUNCTION:'fun';
 VAR:'var';
 WHILE:'while';
@@ -162,6 +186,7 @@ LOOK:'look';
 READ:'read';
 PRINTLN:'println';
 PRINT:'print';
+RETURN:'return';
 
 PLUS:'+';
 MINUS:'-';
@@ -179,6 +204,7 @@ GEQ:'>=';
 LEQ:'<=';
 EQ:'==';
 NEQ:'<>';
+
 
 ASSIGN:'=';
 

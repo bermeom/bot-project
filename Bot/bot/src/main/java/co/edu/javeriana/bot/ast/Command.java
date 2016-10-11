@@ -1,6 +1,8 @@
 package co.edu.javeriana.bot.ast;
 
+import java.util.List;
 import java.util.Map;
+
 
 public class Command implements ASTNode {
 
@@ -12,7 +14,7 @@ public class Command implements ASTNode {
 	}
 
 	@Override
-	public Object execute(Map<String, Object> symbolTable, ProgramInfo programInfo) {
+	public Object execute(List<Map<String,Object>>  symbolTables, ProgramInfo programInfo) {
 		switch (commandName) {
 		case "pick":
 			programInfo.getBot().pick();

@@ -1,7 +1,8 @@
 package co.edu.javeriana.bot.ast;
 
+import java.util.List;
 import java.util.Map;
 
 public interface ASTNode {
-	public Object execute(Map<String, Object> symbolTable, ProgramInfo programInfo);
+	public Object execute(List<Map<String,Object>>  symbolTables, ProgramInfo programInfo);
 }

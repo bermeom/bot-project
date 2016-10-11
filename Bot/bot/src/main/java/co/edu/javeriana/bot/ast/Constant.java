@@ -1,6 +1,9 @@
 package co.edu.javeriana.bot.ast;
 
+import java.util.List;
 import java.util.Map;
+
+
 
 public class Constant implements ASTNode {
 
@@ -12,8 +15,7 @@ public class Constant implements ASTNode {
 	}
 
 	@Override
-	public Object execute(Map<String, Object> symbolTable, ProgramInfo programInfo) {
-		// TODO Auto-generated method stub
+	public Object execute(List<Map<String,Object>>  symbolTables, ProgramInfo programInfo) {
 		return this.value;
 	}
 

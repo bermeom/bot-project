@@ -1,5 +1,7 @@
 package co.edu.javeriana.bot.ast;
 
+
+import java.util.List;
 import java.util.Map;
 
 public class VarDecl implements ASTNode {
@@ -13,8 +15,8 @@ public class VarDecl implements ASTNode {
 	}
 
 	@Override
-	public Object execute(Map<String, Object> symbolTable, ProgramInfo programInfo) {
-		symbolTable.put(this.name, 0);
+	public Object execute(List<Map<String,Object>>  symbolTables, ProgramInfo programInfo) {
+		symbolTables.get(symbolTables.size()-1).put(this.name, 0);
 		return null;
 	}
 

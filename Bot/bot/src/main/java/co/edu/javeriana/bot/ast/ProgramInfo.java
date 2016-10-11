@@ -1,5 +1,6 @@
 package co.edu.javeriana.bot.ast;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,12 +10,14 @@ import org.jpavlich.bot.Bot;
 public class ProgramInfo {
 	
 	private Map<String,Function> functions;
-	Map<String,Object> symbolTable;
+	List<Map<String,Object>> symbolTables;
 	private Bot bot;
 	public ProgramInfo(Bot bot) {
 		super();
 		this.functions = new HashMap<String, Function>();
-		this.symbolTable = new HashMap<String, Object>();
+		this.symbolTables = new ArrayList<Map<String,Object>>();
+		this.symbolTables.add(new HashMap<String, Object>());
+		//this.symbolTable = new HashMap<String, Object>();
 		this.bot = bot;
 	}
 	
@@ -22,8 +25,8 @@ public class ProgramInfo {
 		this.functions.put(function.getFunctionName(), function);
 	}
 
-	public void executeFunction(String FunctionName,List<Object> inputParameters){
-		this.functions.get(FunctionName).executeFunction(inputParameters,this.symbolTable);
+	public Object executeFunction(String FunctionName,List<ASTNode> inputParameters){
+		return this.functions.get(FunctionName).executeFunction(inputParameters,this.symbolTables,this);
 	}
 
 	public Map<String, Function> getFunctions() {
@@ -33,13 +36,13 @@ public class ProgramInfo {
 	public void setFunctions(Map<String, Function> functions) {
 		this.functions = functions;
 	}
-
-	public Map<String, Object> getSymbolTable() {
-		return symbolTable;
+	
+	public List<Map<String, Object>> getSymbolTables() {
+		return symbolTables;
 	}
 
-	public void setSymbolTable(Map<String, Object> symbolTable) {
-		this.symbolTable = symbolTable;
+	public void setSymbolTables(List<Map<String, Object>> symbolTables) {
+		this.symbolTables = symbolTables;
 	}
 
 	public Bot getBot() {

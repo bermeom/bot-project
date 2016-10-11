@@ -1,6 +1,9 @@
 package co.edu.javeriana.bot.ast;
 
+import java.util.List;
 import java.util.Map;
+
+import com.google.common.collect.Lists;
 
 public class VarRef implements ASTNode {
 
@@ -14,8 +17,13 @@ public class VarRef implements ASTNode {
 
 
 	@Override
-	public Object execute(Map<String, Object> symbolTable, ProgramInfo programInfo) {
-		return symbolTable.get(name);
+	public Object execute(List<Map<String,Object>>  symbolTables, ProgramInfo programInfo) {
+		for (Map<String,Object> symbolTable:Lists.reverse(symbolTables) ){
+			if (symbolTable.containsKey(this.name)){
+				return symbolTable.get(name);
+			}
+		}
+		return null;
 	}
 
 }

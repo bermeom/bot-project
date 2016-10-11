@@ -9,24 +9,38 @@ public class Function implements ASTNode {
 	
 	private String functionName;
 	private List<String> inputParameters;
-	private Map<String,Object> symbolTable;
 	private List<ASTNode> body;
 	
-	public Function(String functionName, List<ASTNode> body) {
+	
+	public Function(String functionName, List<String> inputParameters,
+			List<ASTNode> body) {
 		super();
-		this.symbolTable = new HashMap<String, Object>();
 		this.functionName = functionName;
+		this.inputParameters = inputParameters;
 		this.body = body;
 	}
 
 	@Override
-	public Object execute(Map<String, Object> symbolTable, ProgramInfo programInfo) {
+	public Object execute(List<Map<String,Object>>  symbolTables, ProgramInfo programInfo) {
 		programInfo.addFunction(this);
 		return null;
 	}
 
-	public void executeFunction(List<Object> inputParameters,Map<String,Object> symbolTable){
-		
+	public Object executeFunction(List<ASTNode> inputParameters,List<Map<String,Object>>  symbolTables,ProgramInfo programInfo){
+		Map<String,Object> symbolTable = new HashMap<String, Object>();
+		for (int i=0;i<inputParameters.size();i++){
+			symbolTable.put(this.inputParameters.get(i), inputParameters.get(i).execute(symbolTables, programInfo));
+		}
+		symbolTables.add(symbolTable);
+		for(ASTNode n: this.body){
+			if(n instanceof Return){
+				return n.execute(symbolTables, programInfo);
+			}else{
+				n.execute(symbolTables, programInfo);
+			}
+		}
+	    symbolTables.remove(symbolTables.size()-1);
+	    return null;
 	}
 
 	public String getFunctionName() {
@@ -35,14 +49,6 @@ public class Function implements ASTNode {
 
 	public void setFunctionName(String functionName) {
 		this.functionName = functionName;
-	}
-
-	public Map<String, Object> getSymbolTable() {
-		return symbolTable;
-	}
-
-	public void setSymbolTable(Map<String, Object> symbolTable) {
-		this.symbolTable = symbolTable;
 	}
 
 	public List<ASTNode> getBody() {

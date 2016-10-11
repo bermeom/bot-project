@@ -1,5 +1,6 @@
 package co.edu.javeriana.bot.ast;
 
+import java.util.List;
 import java.util.Map;
 
 public class Multiplication implements ASTNode {
@@ -14,8 +15,8 @@ public class Multiplication implements ASTNode {
 	}
 
 	@Override
-	public Object execute(Map<String, Object> symbolTable, ProgramInfo programInfo) {
-		return (int)this.operand1.execute(symbolTable, programInfo)*(int)this.operand2.execute(symbolTable, programInfo);
+	public Object execute(List<Map<String,Object>>  symbolTables, ProgramInfo programInfo) {
+		return (int)this.operand1.execute(symbolTables, programInfo)*(int)this.operand2.execute(symbolTables, programInfo);
 	}
 
 }
