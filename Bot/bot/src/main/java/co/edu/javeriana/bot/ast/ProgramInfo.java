@@ -4,20 +4,20 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Stack;
 
 import org.jpavlich.bot.Bot;
 
 public class ProgramInfo {
 	
 	private Map<String,Function> functions;
-	List<Map<String,Object>> symbolTables;
+	private Stack<Map<String,Object>> symbolTables;
 	private Bot bot;
 	public ProgramInfo(Bot bot) {
 		super();
 		this.functions = new HashMap<String, Function>();
-		this.symbolTables = new ArrayList<Map<String,Object>>();
+		this.symbolTables = new Stack<Map<String,Object>>();
 		this.symbolTables.add(new HashMap<String, Object>());
-		//this.symbolTable = new HashMap<String, Object>();
 		this.bot = bot;
 	}
 	
@@ -37,11 +37,11 @@ public class ProgramInfo {
 		this.functions = functions;
 	}
 	
-	public List<Map<String, Object>> getSymbolTables() {
+	public Stack<Map<String, Object>> getSymbolTables() {
 		return symbolTables;
 	}
 
-	public void setSymbolTables(List<Map<String, Object>> symbolTables) {
+	public void setSymbolTables(Stack<Map<String, Object>> symbolTables) {
 		this.symbolTables = symbolTables;
 	}
 

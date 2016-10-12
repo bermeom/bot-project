@@ -1,7 +1,7 @@
 package co.edu.javeriana.bot.ast;
 
-import java.util.List;
 import java.util.Map;
+import java.util.Stack;
 
 public class Println implements ASTNode {
 
@@ -15,7 +15,7 @@ public class Println implements ASTNode {
 
 
 	@Override
-	public Object execute(List<Map<String,Object>>  symbolTables, ProgramInfo programInfo) {
+	public Object execute(Stack<Map<String, Object>>  symbolTables, ProgramInfo programInfo) {
 		System.out.println(data.execute(symbolTables, programInfo));
 		return null;
 	}

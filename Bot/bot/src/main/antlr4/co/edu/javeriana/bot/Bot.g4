@@ -77,7 +77,7 @@ sentence returns [ASTNode node] : function {$node=$function.node;}
 								| while_loop {$node=$while_loop.node;}
 								| conditional {$node=$conditional.node;}
 								| function_call {$node=$function_call.node;}
-								//| read {$node=$read.node;}
+								| read {$node=$read.node;}
 								;
 								
 command returns[ASTNode node] : {String commandName="";} 
@@ -98,13 +98,30 @@ motionCommand returns[ASTNode node] : {String commandName="";}
 										{$node=new MotionCommand(commandName,$expression.node);}
 										 ;
 
-expression returns [ASTNode node] : t1=factorMUlT{$node=$t1.node;} 
+expression returns [ASTNode node] : t1=factorCOM{$node=$t1.node;} 
+									(AND t2=factorCOM{$node=new AND($node,$t2.node);}
+									|OR t2=factorCOM{$node=new OR($node,$t2.node);}
+									)*;
+									
+factorCOM returns[ASTNode node] : t1=factorSUM{$node=$t1.node;} 
+									(GEQ t2=factorSUM{$node=new GEQ($node,$t2.node);}
+									|LEQ t2=factorSUM{$node=new LEQ($node,$t2.node);}
+									|NEQ t2=factorSUM{$node=new NEQ($node,$t2.node);}
+									|LG t2=factorSUM{$node=new LG($node,$t2.node);}
+									|GT t2=factorSUM{$node=new GT($node,$t2.node);}
+									|EQ t2=factorSUM{$node=new EQ($node,$t2.node);}
+									)*;
+
+factorSUM returns[ASTNode node] : t1=factorMUlT{$node=$t1.node;} 
 									(PLUS t2=factorMUlT{$node=new Addition($node,$t2.node);}
 									|MINUS t2=factorMUlT{$node=new Subtraction($node,$t2.node);}
 									)*;
+									
+									
 factorMUlT returns[ASTNode node] : t1=factorDIV{$node=$t1.node;} 
 									(MULT t2=factorDIV{$node=new Multiplication($node,$t2.node);}
 									)*;
+
 factorDIV returns[ASTNode node] : t1=factorEXP{$node=$t1.node;} 
 								(DIV t2=factorEXP{$node=new Division($node,$t2.node);}
 								)*;
@@ -113,10 +130,12 @@ factorEXP returns[ASTNode node] : t1=term{$node=$t1.node;}
 								)*;
 								
 term returns [ASTNode node]:
-				NUMBER{$node=new Constant(Integer.parseInt($NUMBER.text));}
+				NUMBER{$node=new Constant(Double.parseDouble($NUMBER.text));}
+				|MINUS NUMBER{$node=new Constant(-Integer.parseInt($NUMBER.text));}
 				| ID {$node=new VarRef($ID.text);}
 				| BOOLEAN{$node=new Constant(Boolean.parseBoolean($BOOLEAN.text));}
 				| PAR_OPEN expression PAR_CLOSE {$node=($expression.node);}
+				|NOT expression {$node=new NOT($expression.node);}
 				| string {$node=($string.node);}
 			;
 string returns [ASTNode node]: 
@@ -130,7 +149,7 @@ while_loop  returns [ASTNode node]: WHILE PAR_OPEN expression PAR_CLOSE definiti
 			;
 
 conditional returns [ASTNode node]:IF PAR_OPEN expression PAR_CLOSE 
-				(body=definition)  	 
+				(body=definition) 
 				(ELSE 
 				(elsebody=definition))? 
 				SEMICOLON
@@ -149,7 +168,10 @@ print returns [ASTNode node]:PRINT expression SEMICOLON
 				$node=new Print($expression.node);
 			};
 			
-read:READ ID SEMICOLON;
+read returns [ASTNode node]:READ ID SEMICOLON
+			{
+				$node=new Read($ID.text);	
+			};
 			
 
 
@@ -167,7 +189,7 @@ var_assign returns [ASTNode node]: ID ASSIGN expression SEMICOLON
 
 //------------------
 
-STRING:'\"'([a-zA-Z_0-9]|' ')*'\"';
+STRING:'"' ~('"')* '"';
 FUNCTION:'fun';
 VAR:'var';
 WHILE:'while';
@@ -196,8 +218,8 @@ EXP:'^';
 
 AND:'and';
 OR:'or';
+NOT:'not';
 
-NOT:'!';
 GT:'>';
 LG:'<';
 GEQ:'>=';

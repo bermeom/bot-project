@@ -4,6 +4,7 @@ package co.edu.javeriana.bot.ast;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Stack;
 
 public class Conditional implements ASTNode {
 	
@@ -19,22 +20,22 @@ public class Conditional implements ASTNode {
 	}
 
 	@Override
-	public Object execute(List<Map<String,Object>>  symbolTables, ProgramInfo programInfo) {
+	public Object execute(Stack<Map<String, Object>>  symbolTables, ProgramInfo programInfo) {
 		if((boolean)this.condition.execute(symbolTables, null)){
 			if(this.body!=null){
-				symbolTables.add(new HashMap<String, Object>());
+				symbolTables.push(new HashMap<String, Object>());
 				for(ASTNode n: this.body){
 					n.execute(symbolTables, programInfo);
 				}
-				symbolTables.remove(symbolTables.size()-1);
+				symbolTables.pop();
 			}
 		}else{
 			if(this.elsebody!=null){
-				symbolTables.add(new HashMap<String, Object>());
+				symbolTables.push(new HashMap<String, Object>());
 				for(ASTNode n: this.elsebody){
 					n.execute(symbolTables, programInfo);
 				}
-				symbolTables.remove(symbolTables.size()-1);
+				symbolTables.pop();
 			}
 		}
 		return null;

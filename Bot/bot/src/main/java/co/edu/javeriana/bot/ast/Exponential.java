@@ -1,7 +1,7 @@
 package co.edu.javeriana.bot.ast;
 
-import java.util.List;
 import java.util.Map;
+import java.util.Stack;
 
 public class Exponential implements ASTNode {
 
@@ -15,8 +15,8 @@ public class Exponential implements ASTNode {
 	}
 
 	@Override
-	public Object execute(List<Map<String,Object>>  symbolTables, ProgramInfo programInfo) {
-		return Math.pow((int)this.operand1.execute(symbolTables, programInfo),(int)this.operand2.execute(symbolTables, programInfo));
+	public Object execute(Stack<Map<String, Object>>  symbolTables, ProgramInfo programInfo) {
+		return Math.pow((double)this.operand1.execute(symbolTables, programInfo),(double)this.operand2.execute(symbolTables, programInfo));
 	}
 
 }

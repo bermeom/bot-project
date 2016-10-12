@@ -1,7 +1,7 @@
 package co.edu.javeriana.bot.ast;
 
-import java.util.List;
 import java.util.Map;
+import java.util.Stack;
 
 import com.google.common.collect.Lists;
 
@@ -17,10 +17,10 @@ public class VarRef implements ASTNode {
 
 
 	@Override
-	public Object execute(List<Map<String,Object>>  symbolTables, ProgramInfo programInfo) {
-		for (Map<String,Object> symbolTable:Lists.reverse(symbolTables) ){
-			if (symbolTable.containsKey(this.name)){
-				return symbolTable.get(name);
+	public Object execute(Stack<Map<String, Object>>  symbolTables, ProgramInfo programInfo) {
+		for(int i=symbolTables.size()-1;i>=0;i--){
+			if (symbolTables.get(i).containsKey(this.name)){
+				return symbolTables.get(i).get(name);
 			}
 		}
 		return null;

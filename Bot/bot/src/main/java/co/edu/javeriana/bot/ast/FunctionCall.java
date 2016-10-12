@@ -2,6 +2,7 @@ package co.edu.javeriana.bot.ast;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Stack;
 
 public class FunctionCall implements ASTNode {
 
@@ -15,7 +16,7 @@ public class FunctionCall implements ASTNode {
 	}
 
 	@Override
-	public Object execute(List<Map<String, Object>> symbolTables,
+	public Object execute(Stack<Map<String, Object>> symbolTables,
 			ProgramInfo programInfo) {
 		return programInfo.executeFunction(this.functionName, this.inputParameters);
 	}

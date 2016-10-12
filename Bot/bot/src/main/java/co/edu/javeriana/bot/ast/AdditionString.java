@@ -1,7 +1,7 @@
 package co.edu.javeriana.bot.ast;
 
-import java.util.List;
 import java.util.Map;
+import java.util.Stack;
 
 public class AdditionString extends Addition {
 
@@ -10,7 +10,7 @@ public class AdditionString extends Addition {
 	}
 	
 	@Override
-	public Object execute(List<Map<String,Object>>  symbolTables, ProgramInfo programInfo) {
+	public Object execute(Stack<Map<String, Object>>  symbolTables, ProgramInfo programInfo) {
 		return this.operand1.execute(symbolTables, programInfo).toString()+this.operand2.execute(symbolTables, programInfo).toString()+" ";
 	}
 

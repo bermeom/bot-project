@@ -1,7 +1,7 @@
 package co.edu.javeriana.bot.ast;
 
-import java.util.List;
 import java.util.Map;
+import java.util.Stack;
 
 
 
@@ -15,7 +15,7 @@ public class Constant implements ASTNode {
 	}
 
 	@Override
-	public Object execute(List<Map<String,Object>>  symbolTables, ProgramInfo programInfo) {
+	public Object execute(Stack<Map<String, Object>>  symbolTables, ProgramInfo programInfo) {
 		return this.value;
 	}
 

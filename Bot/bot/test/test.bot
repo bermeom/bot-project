@@ -1,17 +1,19 @@
-fun nn(var a)
-{	
-	
+fun diagonal(var length)
+{
+	var counter = 0;
+	while (counter < length)
+	{
+		south 1;
+		west 1;
+		counter = counter + 1;
+	};
 	println "diagonal terminada";
-	println a;
-	
 };
-
-var h=4;
-println h;
-south h;
-north 2;
-west 4;
-east h;
-south 1;
-println "antes";
-nn(1);
+var a;
+read a;
+if (a == 1 and (2+3*5 >= 6) or (60-6/2 <> 8))
+{
+	diagonal(5);
+}else{
+};
+print a;

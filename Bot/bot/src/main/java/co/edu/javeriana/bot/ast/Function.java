@@ -3,6 +3,7 @@ package co.edu.javeriana.bot.ast;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Stack;
 
 public class Function implements ASTNode {
 	
@@ -21,17 +22,17 @@ public class Function implements ASTNode {
 	}
 
 	@Override
-	public Object execute(List<Map<String,Object>>  symbolTables, ProgramInfo programInfo) {
+	public Object execute(Stack<Map<String, Object>>  symbolTables, ProgramInfo programInfo) {
 		programInfo.addFunction(this);
 		return null;
 	}
 
-	public Object executeFunction(List<ASTNode> inputParameters,List<Map<String,Object>>  symbolTables,ProgramInfo programInfo){
+	public Object executeFunction(List<ASTNode> inputParameters,Stack<Map<String,Object>>  symbolTables,ProgramInfo programInfo){
 		Map<String,Object> symbolTable = new HashMap<String, Object>();
 		for (int i=0;i<inputParameters.size();i++){
 			symbolTable.put(this.inputParameters.get(i), inputParameters.get(i).execute(symbolTables, programInfo));
 		}
-		symbolTables.add(symbolTable);
+		symbolTables.push(symbolTable);
 		for(ASTNode n: this.body){
 			if(n instanceof Return){
 				return n.execute(symbolTables, programInfo);
@@ -39,7 +40,7 @@ public class Function implements ASTNode {
 				n.execute(symbolTables, programInfo);
 			}
 		}
-	    symbolTables.remove(symbolTables.size()-1);
+	    symbolTables.pop();
 	    return null;
 	}
 
