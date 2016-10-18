@@ -22,7 +22,6 @@ public class Main {
 				String program = args.length > 1 ? args[1] : "test/test." + EXTENSION;
 				
 				BotLexer lexer = new BotLexer(new ANTLRFileStream(program));
-
 				System.out.println("Interpreting file " + program);
 
 				CommonTokenStream tokens = new CommonTokenStream(lexer);

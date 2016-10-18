@@ -72,35 +72,52 @@ sentence returns [ASTNode node] : function {$node=$function.node;}
 								| var_assign {$node=$var_assign.node;}
 								| println {$node=$println.node;}
 								| print {$node=$print.node;}
-								| command {$node=$command.node;}
-								| motionCommand {$node=$motionCommand.node;}
 								| while_loop {$node=$while_loop.node;}
 								| conditional {$node=$conditional.node;}
 								| function_call {$node=$function_call.node;}
 								| read {$node=$read.node;}
+								| pick {$node=$pick.node;}
+								| drop {$node=$drop.node;}
+								| look {$node=$look.node;}
+								| north {$node=$north.node;}
+								| south {$node=$south.node;}
+								| west {$node=$west.node;}
+								| east {$node=$east.node;}
 								;
 								
-command returns[ASTNode node] : {String commandName="";} 
-								(
-								PICK {commandName=$PICK.text;}
-								| DROP {commandName=$DROP.text;} 
-								| LOOK {commandName=$LOOK.text;}
-								) SEMICOLON
-								{$node=new Command(commandName);}
+pick returns[ASTNode node] : PICK SEMICOLON
+								{$node=new Pick();}
 								;
-motionCommand returns[ASTNode node] : {String commandName="";} 
-										(NORTH {commandName=$NORTH.text;}
-										| EAST {commandName=$EAST.text;}
-										| WEST {commandName=$WEST.text;}
-										| SOUTH{commandName=$SOUTH.text;}
-										)
-										expression SEMICOLON
-										{$node=new MotionCommand(commandName,$expression.node);}
-										 ;
+drop returns[ASTNode node] : DROP SEMICOLON
+								{$node=new Drop();}
+								;
+look returns[ASTNode node] : LOOK SEMICOLON
+								{$node=new Look();}
+								;
 
-expression returns [ASTNode node] : t1=factorCOM{$node=$t1.node;} 
-									(AND t2=factorCOM{$node=new AND($node,$t2.node);}
-									|OR t2=factorCOM{$node=new OR($node,$t2.node);}
+north returns[ASTNode node] : NORTH expression SEMICOLON
+								{$node=new North($expression.node);}
+								;
+								
+south returns[ASTNode node] : SOUTH expression SEMICOLON
+								{$node=new South($expression.node);}
+								;
+																
+west returns[ASTNode node] : WEST expression SEMICOLON
+								{$node=new West($expression.node);}
+								;
+								
+east returns[ASTNode node] : EAST expression SEMICOLON
+								{$node=new East($expression.node);}
+								;									
+
+expression returns [ASTNode node] : t1=factorAND{$node=$t1.node;} 
+									(
+									OR t2=factorAND{$node=new OR($node,$t2.node);}
+									)*;
+factorAND returns[ASTNode node] : t1=factorCOM{$node=$t1.node;} 
+									(
+									AND t2=factorCOM{$node=new AND($node,$t2.node);}
 									)*;
 									
 factorCOM returns[ASTNode node] : t1=factorSUM{$node=$t1.node;} 
@@ -150,13 +167,15 @@ while_loop  returns [ASTNode node]: WHILE PAR_OPEN expression PAR_CLOSE definiti
 
 conditional returns [ASTNode node]:IF PAR_OPEN expression PAR_CLOSE 
 				(body=definition) 
-				(ELSE 
-				(elsebody=definition))? 
-				SEMICOLON
-				 {
-				 	$node=new Conditional($expression.node,$body.body,$elsebody.body);
-				 }
-				 
+				(ELSE (elsebody=definition) SEMICOLON
+					 {
+					 	$node=new Conditional($expression.node,$body.body,$elsebody.body);
+					 }
+				 |SEMICOLON
+					 {
+					 	$node=new Conditional($expression.node,$body.body,null);
+					 }
+				 )
 				  ;
 
 println returns [ASTNode node]: PRINTLN expression SEMICOLON
