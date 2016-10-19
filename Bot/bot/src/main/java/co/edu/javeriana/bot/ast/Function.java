@@ -10,11 +10,11 @@ public class Function implements ASTNode {
 	
 	private String functionName;
 	private List<String> inputParameters;
-	private List<ASTNode> body;
+	private CodeBlock body;
 	
 	
 	public Function(String functionName, List<String> inputParameters,
-			List<ASTNode> body) {
+			CodeBlock body) {
 		super();
 		this.functionName = functionName;
 		this.inputParameters = inputParameters;
@@ -33,15 +33,12 @@ public class Function implements ASTNode {
 			symbolTable.put(this.inputParameters.get(i), inputParameters.get(i).execute(symbolTables, programInfo));
 		}
 		symbolTables.push(symbolTable);
-		for(ASTNode n: this.body){
-			if(n instanceof Return){
-				return n.execute(symbolTables, programInfo);
-			}else{
-				n.execute(symbolTables, programInfo);
-			}
+		Object return_=this.body.execute(symbolTables, programInfo);
+		symbolTables.pop();
+		if(return_!=null && return_ instanceof Return){
+			return ((Return) return_).getReturn_();
 		}
-	    symbolTables.pop();
-	    return null;
+		return null;
 	}
 
 	public String getFunctionName() {
@@ -52,11 +49,11 @@ public class Function implements ASTNode {
 		this.functionName = functionName;
 	}
 
-	public List<ASTNode> getBody() {
+	public CodeBlock getBody() {
 		return body;
 	}
 
-	public void setBody(List<ASTNode> body) {
+	public void setBody(CodeBlock body) {
 		this.body = body;
 	}
 	

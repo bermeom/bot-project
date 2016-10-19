@@ -8,9 +8,9 @@ import java.util.Stack;
 public class WhileLoop implements ASTNode {
 	
 	private ASTNode condition;
-	private List<ASTNode>  body;
+	private CodeBlock  body;
 	
-	public WhileLoop(ASTNode condition, List<ASTNode> body) {
+	public WhileLoop(ASTNode condition, CodeBlock body) {
 		super();
 		this.condition = condition;
 		this.body = body;
@@ -18,13 +18,13 @@ public class WhileLoop implements ASTNode {
 
 	@Override
 	public Object execute(Stack<Map<String, Object>>  symbolTables, ProgramInfo programInfo) {
+		Object return_=null;
 		while((boolean)this.condition.execute(symbolTables, null)){
 			if(this.body!=null){
-				symbolTables.push(new HashMap<String, Object>());
-				for(ASTNode n: this.body){
-					n.execute(symbolTables, programInfo);
+				return_=this.body.execute(symbolTables, programInfo);
+				if(return_!=null && return_ instanceof Return){
+					return return_;
 				}
-				symbolTables.pop();
 			}
 		}
 		return null;

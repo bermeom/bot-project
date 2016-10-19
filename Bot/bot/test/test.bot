@@ -9,10 +9,22 @@ fun diagonal(var length)
 	};
 	println "diagonal terminada";
 };
-var a;
-read a;
+
+fun test(var a,var b){
+	if( a > b ){
+		return a;
+	};
+	return b;
+};
+
+
+var a=1;
 if (a == 1 and (2+3*5 >= 6) or (60-6/2 <> 8))
 {
 	diagonal(5);
 };
 println a;
+
+var c=test(2,1);
+
+println c;

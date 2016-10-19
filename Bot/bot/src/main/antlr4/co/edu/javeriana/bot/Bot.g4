@@ -37,9 +37,9 @@ program: {
 function returns [ASTNode node]: {
 			
 		}
-		FUNCTION ID input_function definition SEMICOLON
+		FUNCTION ID input_function codeBlock SEMICOLON
 		{
-			$node = new Function($ID.text,$input_function.parameters,$definition.body);
+			$node = new Function($ID.text,$input_function.parameters,$codeBlock.body);
 		}
 		;
 		
@@ -52,10 +52,13 @@ function_call returns [ASTNode node]:
 				$node = new FunctionCall($ID.text,expressions);
 			}
 			;
+return_ returns [ASTNode node]: RETURN expression SEMICOLON
+			{$node=new Return($expression.node);}
+			;
 
-definition returns [List<ASTNode> body]:
+codeBlock returns [CodeBlock body]:
 			{
-				$body=new ArrayList<ASTNode>();
+				$body=new CodeBlock();
 			}
 			BRACKET_OPEN 
 			(s1=sentence{$body.add($s1.node);})*
@@ -83,6 +86,8 @@ sentence returns [ASTNode node] : function {$node=$function.node;}
 								| south {$node=$south.node;}
 								| west {$node=$west.node;}
 								| east {$node=$east.node;}
+								| expression {$node=$expression.node;}
+								| return_ {$node=$return_.node;}
 								;
 								
 pick returns[ASTNode node] : PICK SEMICOLON
@@ -154,20 +159,21 @@ term returns [ASTNode node]:
 				| PAR_OPEN expression PAR_CLOSE {$node=($expression.node);}
 				|NOT expression {$node=new NOT($expression.node);}
 				| string {$node=($string.node);}
+				
 			;
 string returns [ASTNode node]: 
 				STRING{$node=new Constant(((String)$STRING.text).replace("\"",""));}
 				;
 
-while_loop  returns [ASTNode node]: WHILE PAR_OPEN expression PAR_CLOSE definition SEMICOLON
+while_loop  returns [ASTNode node]: WHILE PAR_OPEN expression PAR_CLOSE codeBlock SEMICOLON
 			{
-				$node = new WhileLoop($expression.node,$definition.body);
+				$node = new WhileLoop($expression.node,$codeBlock.body);
 			}
 			;
 
 conditional returns [ASTNode node]:IF PAR_OPEN expression PAR_CLOSE 
-				(body=definition) 
-				(ELSE (elsebody=definition) SEMICOLON
+				(body=codeBlock) 
+				(ELSE (elsebody=codeBlock) SEMICOLON
 					 {
 					 	$node=new Conditional($expression.node,$body.body,$elsebody.body);
 					 }
@@ -201,8 +207,12 @@ var_decl returns [ASTNode node]: VAR (
 								
 								
 								
-var_assign returns [ASTNode node]: ID ASSIGN expression SEMICOLON 
-		{$node=new VarAssign($ID.text,$expression.node);} ;
+var_assign returns [ASTNode node]: ID ASSIGN 
+		(
+		 expression SEMICOLON {$node=new VarAssign($ID.text,$expression.node);} 
+		 | function_call {$node=new VarAssign($ID.text,$function_call.node);}
+		 )
+		;
 
 
 
