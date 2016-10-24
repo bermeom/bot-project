@@ -16,7 +16,13 @@ public class Multiplication implements ASTNode {
 
 	@Override
 	public Object execute(Stack<Map<String, Object>>  symbolTables, ProgramInfo programInfo) {
-		return (double)this.operand1.execute(symbolTables, programInfo)*(double)this.operand2.execute(symbolTables, programInfo);
+		try{
+			return (double)this.operand1.execute(symbolTables, programInfo)*(double)this.operand2.execute(symbolTables, programInfo);
+		} catch (Exception e) {
+			 System.err.println("-> ERROR esta tratando de multiplicar dos tipos de datos que no se pueden multiplicar");
+			 System.exit(0);
+		}
+		return null;
 	}
 
 }

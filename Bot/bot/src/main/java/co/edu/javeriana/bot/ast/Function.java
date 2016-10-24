@@ -29,6 +29,10 @@ public class Function implements ASTNode {
 
 	public Object executeFunction(List<ASTNode> inputParameters,Stack<Map<String,Object>>  symbolTables,ProgramInfo programInfo){
 		Map<String,Object> symbolTable = new HashMap<String, Object>();
+		if(inputParameters.size()!=this.inputParameters.size()){
+			 System.err.println("-> ERROR la cantidad de parametros de entrada no es la esperada por la funcion "+this.functionName);
+			 System.exit(0);
+		}
 		for (int i=0;i<inputParameters.size();i++){
 			symbolTable.put(this.inputParameters.get(i), inputParameters.get(i).execute(symbolTables, programInfo));
 		}

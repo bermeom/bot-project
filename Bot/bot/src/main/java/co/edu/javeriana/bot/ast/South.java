@@ -17,7 +17,12 @@ public class South implements ASTNode {
 	@Override
 	public Object execute(Stack<Map<String, Object>> symbolTables,
 			ProgramInfo programInfo) {
-		programInfo.getBot().down((int)((double)(this.expression.execute(symbolTables, programInfo))));
+		try{
+			programInfo.getBot().down((int)((double)(this.expression.execute(symbolTables, programInfo))));
+		} catch (Exception e) {
+			 System.err.println("-> ERROR en South la expresion no es posible castear a entero");
+			 System.exit(0);
+		}
 		return null;
 	}
 

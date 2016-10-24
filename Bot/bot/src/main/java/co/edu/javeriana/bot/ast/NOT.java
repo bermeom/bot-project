@@ -14,7 +14,13 @@ public class NOT implements ASTNode {
 
 	@Override
 	public Object execute(Stack<Map<String, Object>> symbolTables, ProgramInfo programInfo) {
-		return !(boolean)this.operand1.execute(symbolTables, programInfo);
+		try{
+			return !(boolean)this.operand1.execute(symbolTables, programInfo);
+		} catch (Exception e) {
+			 System.err.println("-> ERROR esta tratando de hacer una operacion booleana con dos tipos de datos que uno o los dos no son booleanos");
+			 System.exit(0);
+		}
+		return null;
 	}
 
 }

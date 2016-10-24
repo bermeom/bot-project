@@ -20,6 +20,7 @@ public class Read implements ASTNode {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		try {
 			String s=br.readLine();
+			boolean found=false;
 			for(int i=symbolTables.size()-1;i>=0;i--){
 				if (symbolTables.get(i).containsKey(this.name)){
 					try {
@@ -27,10 +28,18 @@ public class Read implements ASTNode {
 					} catch (Exception e) {
 						symbolTables.get(i).put(this.name,s);
 					}
+					found=true;
 				}
 			}
+			if(!found){
+				 System.err.println("-> ERROR en el read, la variable "+this.name+" no ha sidro declarada");
+				 System.exit(0);
+			}
+			
 		} catch (IOException e) {
-			e.printStackTrace();
+			 System.err.println("-> ERROR en el read");
+			 System.exit(0);
+		
 		}
 		
 		return null;

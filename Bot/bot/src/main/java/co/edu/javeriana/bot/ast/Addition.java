@@ -17,7 +17,21 @@ public class Addition implements ASTNode {
 
 	@Override
 	public Object execute(Stack<Map<String, Object>>  symbolTables, ProgramInfo programInfo) {
-		return (double)this.operand1.execute(symbolTables, programInfo)+(double)this.operand2.execute(symbolTables, programInfo);
+		try {
+			Object oper1=this.operand1.execute(symbolTables, programInfo);
+			Object oper2=this.operand2.execute(symbolTables, programInfo);
+			if(oper1 instanceof String){
+				return (String)oper1+oper2+"";
+			}else if(oper2 instanceof String){
+				return oper1+(String)oper2+"";
+			}
+			return (double)oper1+(double)oper2;
+				
+		} catch (Exception e) {
+			 System.err.println("-> ERROR esta tratando de sumar dos tipos de datos que no se pueden sumar");
+			 System.exit(0);
+		}
+		return null;
 	}
 
 }

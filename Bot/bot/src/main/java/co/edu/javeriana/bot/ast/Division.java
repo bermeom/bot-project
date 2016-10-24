@@ -16,7 +16,13 @@ public class Division implements ASTNode {
 
 	@Override
 	public Object execute(Stack<Map<String, Object>>  symbolTables, ProgramInfo programInfo) {
-		return (double)this.operand1.execute(symbolTables, programInfo)/(double)this.operand2.execute(symbolTables, programInfo);
+		try{
+			return (double)this.operand1.execute(symbolTables, programInfo)/(double)this.operand2.execute(symbolTables, programInfo);
+		} catch (Exception e) {
+			 System.err.println("-> ERROR esta tratando de dividir dos tipos de datos que no se pueden dividir");
+			 System.exit(0);
+		}
+		return null;
 	}
 
 }

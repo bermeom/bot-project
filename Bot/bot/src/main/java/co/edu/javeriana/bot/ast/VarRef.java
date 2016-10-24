@@ -3,7 +3,6 @@ package co.edu.javeriana.bot.ast;
 import java.util.Map;
 import java.util.Stack;
 
-import com.google.common.collect.Lists;
 
 public class VarRef implements ASTNode {
 
@@ -23,6 +22,8 @@ public class VarRef implements ASTNode {
 				return symbolTables.get(i).get(name);
 			}
 		}
+		System.err.println("-> ERROR la variable "+this.name+" no fue declarada");
+		System.exit(0);
 		return null;
 	}
 

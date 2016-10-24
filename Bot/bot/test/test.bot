@@ -17,14 +17,17 @@ fun test(var a,var b){
 	return b;
 };
 
-
-var a=1;
+var miVariable2 = "hola";
+println miVariable2;
+var a=1.3333;
 if (a == 1 and (2+3*5 >= 6) or (60-6/2 <> 8))
 {
 	diagonal(5);
 };
 println a;
 
-var c=test(2,1);
+var c=test(2,1)+test(4,10);
 
 println c;
+println "Resultado es "+c;
+

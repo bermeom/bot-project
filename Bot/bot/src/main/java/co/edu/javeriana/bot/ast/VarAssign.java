@@ -3,7 +3,6 @@ package co.edu.javeriana.bot.ast;
 import java.util.Map;
 import java.util.Stack;
 
-import com.google.common.collect.Lists;
 
 public class VarAssign implements ASTNode {
 
@@ -18,13 +17,15 @@ public class VarAssign implements ASTNode {
 
 	@Override
 	public Object execute(Stack<Map<String, Object>>  symbolTables, ProgramInfo programInfo) {
-		for (Map<String,Object> symbolTable:Lists.reverse(symbolTables) ){
-			if (symbolTable.containsKey(this.name)){
-				symbolTable.put(this.name, this.expression.execute(symbolTables, programInfo));
-				break;
+		Object expressionResult=this.expression.execute(symbolTables, programInfo);
+		for(int i=symbolTables.size()-1;i>=0;i--){
+			if (symbolTables.get(i).containsKey(this.name)){
+				symbolTables.get(i).put(this.name,expressionResult );
+				return null;
 			}
 		}
-		symbolTables.peek().put(this.name, this.expression.execute(symbolTables, programInfo));
+		System.err.println("-> ERROR la variable "+this.name+" no fue declarada");
+		System.exit(0);
 		return null;
 	}
 

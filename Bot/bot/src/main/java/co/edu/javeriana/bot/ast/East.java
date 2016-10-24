@@ -17,7 +17,12 @@ public class East implements ASTNode {
 	@Override
 	public Object execute(Stack<Map<String, Object>> symbolTables,
 			ProgramInfo programInfo) {
-		programInfo.getBot().left((int)((double)(this.expression.execute(symbolTables, programInfo))));
+		try{
+			programInfo.getBot().left((int)((double)(this.expression.execute(symbolTables, programInfo))));
+		} catch (Exception e) {
+			 System.err.println("-> ERROR en East la expresion no es posible castear a entero");
+			 System.exit(0);
+		}
 		return null;
 	}
 

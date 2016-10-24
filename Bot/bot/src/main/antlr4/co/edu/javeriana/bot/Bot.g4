@@ -52,6 +52,16 @@ function_call returns [ASTNode node]:
 				$node = new FunctionCall($ID.text,expressions);
 			}
 			;
+function_call_whitout_semicolon returns [ASTNode node]:
+			{
+				List<ASTNode> expressions=new ArrayList<ASTNode>();
+			}
+			ID PAR_OPEN (e1=expression{expressions.add($e1.node);} (COMMA e2=expression{expressions.add($e2.node);})*)* PAR_CLOSE
+			{
+				$node = new FunctionCall($ID.text,expressions);
+			}
+			;
+
 return_ returns [ASTNode node]: RETURN expression SEMICOLON
 			{$node=new Return($expression.node);}
 			;
@@ -120,11 +130,14 @@ expression returns [ASTNode node] : t1=factorAND{$node=$t1.node;}
 									(
 									OR t2=factorAND{$node=new OR($node,$t2.node);}
 									)*;
-factorAND returns[ASTNode node] : t1=factorCOM{$node=$t1.node;} 
+factorAND returns[ASTNode node] : t1=factorNOT{$node=$t1.node;} 
 									(
-									AND t2=factorCOM{$node=new AND($node,$t2.node);}
+									AND t2=factorNOT{$node=new AND($node,$t2.node);}
 									)*;
-									
+factorNOT returns[ASTNode node] : ( NOT factorCOM {$node=new NOT($factorCOM.node);}
+								  	|t2=factorCOM{$node=$t2.node;} 
+									)
+								;									
 factorCOM returns[ASTNode node] : t1=factorSUM{$node=$t1.node;} 
 									(GEQ t2=factorSUM{$node=new GEQ($node,$t2.node);}
 									|LEQ t2=factorSUM{$node=new LEQ($node,$t2.node);}
@@ -157,9 +170,8 @@ term returns [ASTNode node]:
 				| ID {$node=new VarRef($ID.text);}
 				| BOOLEAN{$node=new Constant(Boolean.parseBoolean($BOOLEAN.text));}
 				| PAR_OPEN expression PAR_CLOSE {$node=($expression.node);}
-				|NOT expression {$node=new NOT($expression.node);}
 				| string {$node=($string.node);}
-				
+				| function_call_whitout_semicolon{$node=$function_call_whitout_semicolon.node;}
 			;
 string returns [ASTNode node]: 
 				STRING{$node=new Constant(((String)$STRING.text).replace("\"",""));}
@@ -201,8 +213,8 @@ read returns [ASTNode node]:READ ID SEMICOLON
 
 
 var_decl returns [ASTNode node]: VAR (
-								ID{$node=new VarDecl($ID.text);} SEMICOLON 
-								| var_assign{$node=$var_assign.node;}
+								ID{$node=new VarDecl($ID.text,new Constant(0));} SEMICOLON 
+								| ID ASSIGN expression SEMICOLON {$node=new VarDecl($ID.text,new VarAssign($ID.text,$expression.node));}
 								);
 								
 								
@@ -210,7 +222,6 @@ var_decl returns [ASTNode node]: VAR (
 var_assign returns [ASTNode node]: ID ASSIGN 
 		(
 		 expression SEMICOLON {$node=new VarAssign($ID.text,$expression.node);} 
-		 | function_call {$node=new VarAssign($ID.text,$function_call.node);}
 		 )
 		;
 
@@ -271,7 +282,7 @@ COMMA:',';
 ID:[a-zA-Z][a-zA-Z0-9]*;
 
 
-NUMBER:[0-9]+;
+NUMBER:[0-9]([0-9]*|'.'[0-9]*);
 
 WS
 :
